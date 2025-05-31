@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR 示例</title>
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      body, html { margin: 0; overflow: hidden; width: 100%; height: 100%; }
+      #ar-scene { width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <a-scene
+      id="ar-scene"
+      mindar-image="imageTargetSrc: targets.mind"
+      embedded
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true"
+    >
+      <a-assets>
+        <img id="img-e1" src="e1.png" />
+        <img id="img-e2" src="e2.png" />
+        <img id="img-e3" src="e3.png" />
+        <img id="img-e4" src="e4.png" />
+        <img id="img-e5" src="e5.png" />
+        <img id="img-e6" src="e6.png" />
+      </a-assets>
+
+      <!-- 六個 target index 與對應的結果圖片 -->
+      <a-image mindar-image-target="targetIndex: 0" src="#img-e1" position="0 0 0" width="1" height="1"></a-image>
+      <a-image mindar-image-target="targetIndex: 1" src="#img-e2" position="0 0 0" width="1" height="1"></a-image>
+      <a-image mindar-image-target="targetIndex: 2" src="#img-e3" position="0 0 0" width="1" height="1"></a-image>
+      <a-image mindar-image-target="targetIndex: 3" src="#img-e4" position="0 0 0" width="1" height="1"></a-image>
+      <a-image mindar-image-target="targetIndex: 4" src="#img-e5" position="0 0 0" width="1" height="1"></a-image>
+      <a-image mindar-image-target="targetIndex: 5" src="#img-e6" position="0 0 0" width="1" height="1"></a-image>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    </a-scene>
+  </body>
+</html>
+
