@@ -1,42 +1,65 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MindAR Demo</title>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/aframe/mindar-image-aframe.prod.js"></script>
+    <title>AR Demo</title>
+    <script src="https://unpkg.com/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+    <script src="https://unpkg.com/three@0.150.1/build/three.min.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; }
-      #ar-scene { width: 100vw; height: 100vh; }
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #ar-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+      .image-result {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: none;
+        max-width: 80vw;
+      }
     </style>
   </head>
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc: targets.mind"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: true"
-      embedded
-      id="ar-scene"
-    >
-      <a-assets>
-        <img id="e1" src="e1.png" />
-        <img id="e2" src="e2.png" />
-        <img id="e3" src="e3.png" />
-        <img id="e4" src="e4.png" />
-        <img id="e5" src="e5.png" />
-        <img id="e6" src="e6.png" />
-      </a-assets>
+    <div id="ar-container"></div>
+    <img id="result-img" class="image-result" />
 
-      <!-- 六個對應 target index 的圖片 -->
-      <a-image mindar-image-target="targetIndex: 0" src="#e1" position="0 0 0" rotation="0 0 0" width="1" height="0.75"></a-image>
-      <a-image mindar-image-target="targetIndex: 1" src="#e2" position="0 0 0" rotation="0 0 0" width="1" height="0.75"></a-image>
-      <a-image mindar-image-target="targetIndex: 2" src="#e3" position="0 0 0" rotation="0 0 0" width="1" height="0.75"></a-image>
-      <a-image mindar-image-target="targetIndex: 3" src="#e4" position="0 0 0" rotation="0 0 0" width="1" height="0.75"></a-image>
-      <a-image mindar-image-target="targetIndex: 4" src="#e5" position="0 0 0" rotation="0 0 0" width="1" height="0.75"></a-image>
-      <a-image mindar-image-target="targetIndex: 5" src="#e6" position="0 0 0" rotation="0 0 0" width="1" height="0.75"></a-image>
+    <script type="module">
+      import { MindARThree } from "https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js";
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-    </a-scene>
+      const start = async () => {
+        const mindarThree = new MindARThree({
+          container: document.querySelector("#ar-container"),
+          imageTargetSrc: "./targets.mind",
+        });
+
+        const { renderer, scene, camera } = mindarThree;
+
+        const anchorGroups = [];
+
+        for (let i = 0; i < 6; i++) {
+          const anchor = mindarThree.addAnchor(i);
+          anchor.onTargetFound = () => {
+            const img = document.getElementById("result-img");
+            img.src = `e${i + 1}.png`;
+            img.style.display = "block";
+          };
+          anchor.onTargetLost = () => {
+            document.getElementById("result-img").style.display = "none";
+          };
+          anchorGroups.push(anchor.group);
+        }
+
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      };
+
+      start();
+    </script>
   </body>
 </html>
-
